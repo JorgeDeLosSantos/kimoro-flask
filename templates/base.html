@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> {% block title %}{% endblock  %} </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    {% block extrahead %} {% endblock  %}
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('forward_kinematics') }}">Forward kinematics</a></li>
+            <li><a href="{{ url_for('inverse_kinematics') }}">Inverse kinematics</a></li>
+        </ul>
+    </nav>
+    {% block header %}
+        
+    {% endblock  %}
+    <main>
+        {% block content %}
+        
+        {% endblock  %}
+    </main>
+</body>
+</html>

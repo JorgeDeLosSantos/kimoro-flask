@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Home
+{% endblock  %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/forward-kinematics.css') }}">
+{% endblock  %}
+
+{% block header %}
+<h1> Forward kinematics </h1>
+{% endblock  %}
+
+{% block content %}
+
+<div class="dh-params">
+    <form method="POST">
+        <input type="hidden" name="form_id" value="dof_form">
+    
+        <label for="dof">Select DOF:</label>
+        <input type="number" name="dof" id="dof" min="1" max="6" value={{selected_value}} onchange="this.form.submit()">
+    </form>
+    <h2> Denavit-Hartenberg parameters </h2>
+    <form method="POST">
+        <input type="hidden" name="form_id" value="dh_params_form">
+        <table>
+            <tr>
+                <th> \(i\) </th>
+                <th> \( a_i\)  </th>
+                <th> \(\alpha_i\) </th>
+                <th> \(d_i\) </th>
+                <th> \(\theta_i\) </th>
+            </tr>
+            {% for i in range(robot_dof) %}
+            <tr>
+                {% if new_calc %}
+                    <td><label> \({{ i+1 }}\)  </label> </td>
+                    <td><input type="text" step="any" name="a_{{ i }}" required></td>
+                    <td><input type="text" step="any" name="alpha_{{ i }}" required></td>
+                    <td><input type="text" step="any" name="d_{{ i }}" required></td>
+                    <td><input type="text" step="any" name="theta_{{ i }}" required></td>
+                {% else %}
+                    <td><label> \({{ i }}\)  </label> </td>
+                    <td><input type="text" step="any" name="a_{{ i }}" value="{{dh_params[i][0]}}" required></td>
+                    <td><input type="text" step="any" name="alpha_{{ i }}" value="{{dh_params[i][1]}}" required></td>
+                    <td><input type="text" step="any" name="d_{{ i }}" value="{{dh_params[i][2]}}" required></td>
+                    <td><input type="text" step="any" name="theta_{{ i }}" value="{{dh_params[i][3]}}" required></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+        <button type="submit">Compute</button>
+    </form>
+</div>
+
+<div class="results">
+    <p> $$ {{ fk }} $$ </p>
+</div>
+
+{% endblock  %}
