@@ -1,0 +1,39 @@
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 5px;
+}
+
+div {
+    /* border: 1px solid; */
+    /* background-color: #dadada; */
+    margin: 10px;
+    padding: 5px;
+}
+
+/* .dh-params {
+    grid-column: 1;
+}
+
+.results {
+    grid-column: 2/4;
+} */
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+input[type="text"] {
+    width: 100%; /* Asegúrate de que los inputs usen todo el ancho de las celdas */
+    box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+    padding: 4px; /* Espaciado interno para los inputs */
+    border: 1px solid #ccc; /* Borde para los inputs */
+}
+
+input[type="number"] {
+    width: 20%; /* Asegúrate de que los inputs numéricos usen todo el ancho de las celdas */
+    box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+    padding: 4px; /* Espaciado interno para los inputs */
+    border: 1px solid #ccc; /* Borde para los inputs numéricos */
+}

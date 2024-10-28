@@ -5,11 +5,11 @@
 {% endblock  %}
 
 {% block extrahead %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/forward-kinematics.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/inverse-kinematics.css') }}">
 {% endblock  %}
 
 {% block header %}
-<h1> Forward kinematics </h1>
+<h1> Inverse kinematics </h1>
 {% endblock  %}
 
 {% block content %}
@@ -22,33 +22,52 @@
         <input type="number" name="dof" id="dof" min="1" max="6" value={{selected_value}} onchange="this.form.submit()">
     </form>
     <h2> Denavit-Hartenberg parameters </h2>
-    <form method="POST">
-        <input type="hidden" name="form_id" value="dh_params_form">
+    <table>
+        <tr>
+            <th> \(i\) </th>
+            <th> \( a_i\)  </th>
+            <th> \(\alpha_i\) </th>
+            <th> \(d_i\) </th>
+            <th> \(\theta_i\) </th>
+        </tr>
+        {% for i in range(robot_dof) %}
+        <tr>
+            {% if new_calc %}
+                <td><label> \({{ i+1 }}\)  </label> </td>
+                <td><input type="text" step="any" name="a_{{ i }}" id="a_{{ i }}" required></td>
+                <td><input type="text" step="any" name="alpha_{{ i }}" id="alpha_{{ i }}" required></td>
+                <td><input type="text" step="any" name="d_{{ i }}" id="d_{{ i }}" required></td>
+                <td><input type="text" step="any" name="theta_{{ i }}" id="theta_{{ i }}" required></td>
+            {% else %}
+                <td><label> \({{ i }}\)  </label> </td>
+                <td><input type="text" step="any" name="a_{{ i }}" value="{{dh_params[i][0]}}" id="a_{{ i }}" required></td>
+                <td><input type="text" step="any" name="alpha_{{ i }}" value="{{dh_params[i][1]}}" id="alpha_{{ i }}" required></td>
+                <td><input type="text" step="any" name="d_{{ i }}" value="{{dh_params[i][2]}}" id="d_{{ i }}" required></td>
+                <td><input type="text" step="any" name="theta_{{ i }}" value="{{dh_params[i][3]}}" id="theta_{{ i }}" required></td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="goal-pose">
+    <h2>Desired position</h2>
+
+    <form method="POST" id="compute_ik">
+        <input type="hidden" name="form_id" value="compute_ik">
         <table>
             <tr>
-                <th> \(i\) </th>
-                <th> \( a_i\)  </th>
-                <th> \(\alpha_i\) </th>
-                <th> \(d_i\) </th>
-                <th> \(\theta_i\) </th>
+                <td><label> \(P_x\)  </label> </td>
+                <td><input type="text" step="any" name="Px" value="100" required></td>
             </tr>
-            {% for i in range(robot_dof) %}
             <tr>
-                {% if new_calc %}
-                    <td><label> \({{ i+1 }}\)  </label> </td>
-                    <td><input type="text" step="any" name="a_{{ i }}" required></td>
-                    <td><input type="text" step="any" name="alpha_{{ i }}" required></td>
-                    <td><input type="text" step="any" name="d_{{ i }}" required></td>
-                    <td><input type="text" step="any" name="theta_{{ i }}" required></td>
-                {% else %}
-                    <td><label> \({{ i }}\)  </label> </td>
-                    <td><input type="text" step="any" name="a_{{ i }}" value="{{dh_params[i][0]}}" required></td>
-                    <td><input type="text" step="any" name="alpha_{{ i }}" value="{{dh_params[i][1]}}" required></td>
-                    <td><input type="text" step="any" name="d_{{ i }}" value="{{dh_params[i][2]}}" required></td>
-                    <td><input type="text" step="any" name="theta_{{ i }}" value="{{dh_params[i][3]}}" required></td>
-                {% endif %}
+                <td><label> \(P_y\)  </label> </td>
+                <td><input type="text" step="any" name="Py" value="100" required></td>
             </tr>
-            {% endfor %}
+            <tr>
+                <td><label> \(P_z\)  </label> </td>
+                <td><input type="text" step="any" name="Pz" value="100" required></td>
+            </tr>
         </table>
         <button type="submit">Compute</button>
     </form>
@@ -57,5 +76,37 @@
 <div class="results">
     <p> $$ {{ fk }} $$ </p>
 </div>
+
+
+<script>
+    const robotDOF = {{ robot_dof }};
+    const form = document.getElementById('compute_ik');
+
+    form.addEventListener('submit', function (event) {
+        // Por cada campo de los elementos externos, crea un campo oculto en el formulario
+        for (let i = 0; i < robotDOF; i++) {
+            let a = document.getElementById(`a_${i}`).value;
+            let alpha = document.getElementById(`alpha_${i}`).value;
+            let d = document.getElementById(`d_${i}`).value;
+            let theta = document.getElementById(`theta_${i}`).value;
+
+            // Agrega campos ocultos al formulario
+            form.appendChild(createHiddenInput(`a_${i}`, a));
+            form.appendChild(createHiddenInput(`alpha_${i}`, alpha));
+            form.appendChild(createHiddenInput(`d_${i}`, d));
+            form.appendChild(createHiddenInput(`theta_${i}`, theta));
+        }
+
+    });
+
+    // Función para crear un campo oculto
+    function createHiddenInput(name, value) {
+        let hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = name;
+        hiddenInput.value = value;
+        return hiddenInput;
+    }
+</script>
 
 {% endblock  %}

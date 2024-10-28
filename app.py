@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import moro as mr
 import sympy as sp
 import json
+import random
 
 app = Flask(__name__)
 
@@ -81,12 +82,14 @@ def inverse_kinematics():
         
     if request.method == "POST":
         form_id = request.form.get("form_id")   
+        # print(f"theta_0 = {request.form.get('theta_0')}")
+        # print(f"a_0 = {request.form.get('a_0')}")
         
         if form_id == "dof_form":
             robot_dof = int(request.form.get("dof"))
             new_calc = True
             
-        if form_id == "dh_params_form":
+        if form_id == "compute_ik":
             # Leer los parámetros de Denavit-Hartenberg del formulario
             # robot_dof = int(request.form.get("dof"))
             dh_params = []
@@ -97,13 +100,22 @@ def inverse_kinematics():
                 theta = request.form.get(f"theta_{i}", 0)
                 a,alpha,d,theta = preprocess_params(a,alpha,d,theta)
                 dh_params.append((a, alpha, d, theta))
-
+                
+            Px = sp.sympify( request.form.get("Px") )
+            Py = sp.sympify( request.form.get("Py") )
+            Pz = sp.sympify( request.form.get("Pz") )
+            r_des = sp.Matrix( [Px,Py] )
             # Calcular la cinemática directa y generar la imagen
             Robot = mr.Robot(*dh_params)
-            fk_str_latex = f"T_{robot_dof}^0 = " + sp.latex( Robot.T )
+            r_e = Robot.T[:2,3]
+            print(Robot.qs)
+            q_sol = sp.nsolve(sp.Eq(r_e, r_des), Robot.qs, [0.1,0.1])
+            print( q_sol )
+            # fk_str_latex = f"T_{robot_dof}^0 = " + sp.latex( Robot.T )
+            fk_str_latex = f"{q_sol}"
             new_calc = False
     
-    print(robot_dof, fk_str_latex, dh_params)
+    # print(robot_dof, fk_str_latex, dh_params)   
     context = {
         "robot_dof": robot_dof, 
         "selected_value": robot_dof,

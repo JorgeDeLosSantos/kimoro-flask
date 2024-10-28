@@ -1,1 +1,1 @@
-{"robot_dof": 1, "selected_value": 1, "fk": null, "new_calc": false, "dh_params": [["l_1", "0", "0", "q_1(t)"]]}
+{"robot_dof": 2, "selected_value": 2, "fk": null, "new_calc": false, "dh_params": [["200", "0", "0", "q_1(t)"], ["200", "0", "0", "q_2(t)"]]}
