@@ -58,15 +58,15 @@
         <table>
             <tr>
                 <td><label> \(P_x\)  </label> </td>
-                <td><input type="text" step="any" name="Px" value="100" required></td>
+                <td><input type="text" step="any" name="Px" value="{{desired_position[0]}}" required></td>
             </tr>
             <tr>
                 <td><label> \(P_y\)  </label> </td>
-                <td><input type="text" step="any" name="Py" value="100" required></td>
+                <td><input type="text" step="any" name="Py" value="{{desired_position[1]}}" required></td>
             </tr>
             <tr>
                 <td><label> \(P_z\)  </label> </td>
-                <td><input type="text" step="any" name="Pz" value="100" required></td>
+                <td><input type="text" step="any" name="Pz" value="{{desired_position[2]}}" required></td>
             </tr>
         </table>
         <button type="submit">Compute</button>

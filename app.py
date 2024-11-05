@@ -73,11 +73,13 @@ def inverse_kinematics():
         robot_dof = saved_data.get("robot_dof") 
         fk_str_latex = saved_data.get("fk_str_latex")
         dh_params = saved_data.get("dh_params")
+        desired_position = saved_data.get("desired_position")
         new_calc = saved_data.get("new_calc")
     except Exception as e:
         robot_dof = 6
         fk_str_latex = ""
         dh_params = [("","","","")]
+        desired_position = [0,0,0]
         new_calc = True
         
     if request.method == "POST":
@@ -104,16 +106,18 @@ def inverse_kinematics():
             Px = sp.sympify( request.form.get("Px") )
             Py = sp.sympify( request.form.get("Py") )
             Pz = sp.sympify( request.form.get("Pz") )
-            r_des = sp.Matrix( [Px,Py] )
+            r_des = sp.Matrix([Px,Py,Pz])
             # Calcular la cinemática directa y generar la imagen
             Robot = mr.Robot(*dh_params)
-            r_e = Robot.T[:2,3]
-            print(Robot.qs)
-            q_sol = sp.nsolve(sp.Eq(r_e, r_des), Robot.qs, [0.1,0.1])
-            print( q_sol )
+            q_sol = Robot.solve_inverse_kinematics(r_des)
+            print(q_sol)
+            # r_e = Robot.T[:2,3]
+            # print(Robot.qs)
+            # print( q_sol )
             # fk_str_latex = f"T_{robot_dof}^0 = " + sp.latex( Robot.T )
             fk_str_latex = f"{q_sol}"
             new_calc = False
+            desired_position = list(r_des)
     
     # print(robot_dof, fk_str_latex, dh_params)   
     context = {
@@ -122,6 +126,7 @@ def inverse_kinematics():
         "fk": fk_str_latex,
         "new_calc": new_calc,
         "dh_params": [(str(a), str(alpha), str(d), str(theta)) for (a,alpha,d,theta) in dh_params],
+        "desired_position": [str(p) for p in desired_position],
         }
     
     save_data(context, ikdata_filename)
