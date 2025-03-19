@@ -1,1 +1,1 @@
-{"robot_dof": 3, "selected_value": 3, "fk": "[{q_1(t): np.float64(1.2490457723982544), q_2(t): np.float64(0.28692240697995947), q_3(t): np.float64(-1.1863995522992579)}]", "new_calc": false, "dh_params": [["0", "pi/2", "300", "q_1(t)"], ["200", "0", "0", "q_2(t)"], ["200", "0", "0", "q_3(t)"]], "desired_position": ["100", "300", "200"]}
+{"robot_dof": 3, "selected_value": 3, "fk": null, "new_calc": false, "dh_params": [["0", "pi/2", "300", "q_1(t)"], ["200", "0", "0", "q_2(t)"], ["200", "0", "0", "q_3(t)"]], "desired_position": ["100", "300", "355"]}
